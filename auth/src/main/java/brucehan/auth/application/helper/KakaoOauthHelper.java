@@ -2,7 +2,7 @@ package brucehan.auth.application.helper;
 
 import brucehan.auth.infrastructure.kakao_client.KakaoTokenClient;
 import brucehan.auth.infrastructure.kakao_client.dto.PublicKeysDto;
-import brucehan.auth.presentation.provider.OidcDecodePayload;
+import brucehan.auth.infrastructure.kakao_client.dto.OidcDecodePayload;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;

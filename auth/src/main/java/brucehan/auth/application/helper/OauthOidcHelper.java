@@ -2,7 +2,7 @@ package brucehan.auth.application.helper;
 
 import brucehan.auth.infrastructure.kakao_client.dto.PublicKeysDto;
 import brucehan.auth.presentation.provider.JwtOidcProvider;
-import brucehan.auth.presentation.provider.OidcDecodePayload;
+import brucehan.auth.infrastructure.kakao_client.dto.OidcDecodePayload;
 import org.springframework.stereotype.Component;
 
 /**

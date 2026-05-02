@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.catalina.authenticator.SavedRequest;
 import org.springframework.stereotype.Component;
 
+import javax.crypto.SecretKey;
 import java.math.BigInteger;
 import java.security.Key;
 import java.security.KeyFactory;
@@ -26,8 +27,11 @@ public class JwtOidcProvider {
     }
 
     private Jwt<Header, Claims> getUnsignedTokenClaims(String token, String iss, String aud) {
+        log.info("token = {}", token);
+        log.info("iss = {}", iss);
+        log.info("aud = {}", aud);
         try {
-            return Jwts.parserBuilder()
+            return Jwts.parser()
                     .requireAudience(aud) // aud (카카오톡 어플리케이션 아이디)가 같은지 확인
                     .requireIssuer(iss) // iss(ID 토큰을 발급한 인증 기관 정보)가 카카오인지 확인
                     .build()
@@ -52,10 +56,11 @@ public class JwtOidcProvider {
             String modulus,
             String exponent
     ) {
-        Claims body = getOidcTokenJws(token, modulus, exponent).getBody();
+        Claims body = getOidcTokenJws(token, modulus, exponent).getPayload();
+        log.info("aud - {}", body.getAudience());
         return new OidcDecodePayload(
                 body.getIssuer(),
-                body.getAudience(),
+                body.getAudience().iterator().next(),
                 body.getSubject(),
                 body.get("email", String.class)
         );
@@ -64,10 +69,13 @@ public class JwtOidcProvider {
     // 공개키로 토큰 검증 시도
     public Jws<Claims> getOidcTokenJws(String token, String modulus, String exponent) {
         try {
-            return Jwts.parserBuilder()
-                    .setSigningKey(getRsaPublicKey(modulus, exponent))
+            log.info("token = {}", token);
+            log.info("modulus = {}", modulus);
+            log.info("exponent = {}", exponent);
+            return Jwts.parser()
+                    .verifyWith(getRsaPublicKey(modulus, exponent))
                     .build()
-                    .parseClaimsJws(token);
+                    .parseSignedClaims(token);
         } catch (ExpiredJwtException e) {
             throw new RuntimeException(e);
         } catch (InvalidKeySpecException e) {
@@ -79,7 +87,7 @@ public class JwtOidcProvider {
         }
     }
 
-    private Key getRsaPublicKey(String modulus, String exponent)
+    private SecretKey getRsaPublicKey(String modulus, String exponent)
             throws NoSuchAlgorithmException, InvalidKeySpecException {
         KeyFactory keyFactory = KeyFactory.getInstance(RSA);
         byte[] decodeN = Base64.getUrlDecoder().decode(modulus);
@@ -88,6 +96,6 @@ public class JwtOidcProvider {
         BigInteger e = new BigInteger(1, decodeE);
 
         RSAPublicKeySpec keySpec = new RSAPublicKeySpec(n, e);
-        return keyFactory.generatePublic(keySpec);
+        return (SecretKey) keyFactory.generatePublic(keySpec);
     }
 }

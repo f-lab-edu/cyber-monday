@@ -1,4 +1,4 @@
-package brucehan.auth.presentation.provider;
+package brucehan.auth.infrastructure.kakao_client.dto;
 
 public record OidcDecodePayload(
         String iss,

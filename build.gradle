@@ -26,17 +26,21 @@ subprojects {
     }
 
     dependencies {
-        implementation 'org.springframework.boot:spring-boot-starter'
-        implementation 'org.springframework.boot:spring-boot-starter-web'
+        implementation('org.springframework.boot:spring-boot-starter')
+        implementation('org.springframework.boot:spring-boot-starter-web')
 
-        testImplementation 'org.springframework.boot:spring-boot-starter-test'
-        testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+        testImplementation('org.springframework.boot:spring-boot-starter-test')
+        testRuntimeOnly('org.junit.platform:junit-platform-launcher')
 
         // lombok
-        compileOnly 'org.projectlombok:lombok'
-        annotationProcessor 'org.projectlombok:lombok'
+        compileOnly('org.projectlombok:lombok')
+        annotationProcessor('org.projectlombok:lombok')
 
-        implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+        // DB
+        runtimeOnly('com.mysql:mysql-connector-j:8.4.0')
+
+        // persistence
+        implementation('org.springframework.boot:spring-boot-starter-data-jpa')
     }
 }
 

@@ -1,9 +1,13 @@
 package brucehan.auth.presentation;
 
+import brucehan.auth.application.RefreshTokenService;
+import brucehan.auth.infrastructure.kakao_client.dto.JwtTokenDto;
+import brucehan.auth.infrastructure.kakao_client.dto.RefreshRequest;
 import brucehan.auth.infrastructure.kakao_client.dto.request.KakaoSocialLoginRequest;
 import brucehan.auth.application.KakaoSocialLoginService;
 import brucehan.auth.infrastructure.kakao_client.dto.response.KakaoOAuthUserResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -11,12 +15,14 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/kakao")
 public class KakaoSocialLoginController {
     private final KakaoSocialLoginService kakaoSocialLoginService;
+    private final RefreshTokenService refreshTokenService;
 
     @PostMapping("/sign-up/openfeign")
-    public KakaoOAuthUserResponse loginOrSignUp(
+    public ResponseEntity<JwtTokenDto> loginOrSignUp(
             @RequestBody KakaoSocialLoginRequest kakaoSocialLoginRequest
     ) {
-        return kakaoSocialLoginService.loginOrSignUp(kakaoSocialLoginRequest.code());
+        JwtTokenDto tokens = kakaoSocialLoginService.loginOrSignUp(kakaoSocialLoginRequest);
+        return ResponseEntity.ok(tokens);
     }
 
     @GetMapping("/login/callback")
@@ -28,5 +34,10 @@ public class KakaoSocialLoginController {
         System.out.println("state = " + state);
     }
 
+    @PostMapping("/token/refresh")
+    public ResponseEntity<JwtTokenDto> refreshAccessToken(@RequestBody RefreshRequest request) {
+        JwtTokenDto newTokens = refreshTokenService.reissueTokens(request.refreshToken());
+        return ResponseEntity.ok(newTokens);
+    }
 
 }
