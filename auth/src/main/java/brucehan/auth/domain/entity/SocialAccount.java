@@ -1,5 +1,6 @@
 package brucehan.auth.domain.entity;
 
+import com.fasterxml.jackson.databind.ser.Serializers;
 import jakarta.persistence.Column;
 import jakarta.persistence.EmbeddedId;
 import jakarta.persistence.Entity;
@@ -15,7 +16,7 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor
 @Table(schema = "cybermonday", name = "social_accounts")
-public class SocialAccount {
+public class SocialAccount extends BaseEntity {
 
     @EmbeddedId
     private SocialAccountId socialAccountId;
@@ -25,7 +26,4 @@ public class SocialAccount {
 
     @Column(name = "subject")
     private String subject;
-
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
 }

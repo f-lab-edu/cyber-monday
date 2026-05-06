@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(schema = "cybermonday", name = "members")
-public class MemberEntity {
+public class MemberEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,12 +34,7 @@ public class MemberEntity {
     @Column(name = "role")
     private String role;
 
-    @Column(name = "created_at")
-    private LocalDateTime createdAt;
-
-    @Column(name = "updated_at")
-    private LocalDateTime updatedAt;
-
+    // BaseEntity에 두기엔 가끔 나오는 컬럼이라 필요한 Entity에만 만들기로 함
     @Column(name = "deleted_at")
     private LocalDateTime deletedAt;
 
