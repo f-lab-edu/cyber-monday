@@ -7,6 +7,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 
 import java.time.LocalDateTime;
 import java.util.*;
@@ -34,9 +35,6 @@ public class MemberEntity {
 
     @Column(name = "profile_url")
     private String profileUrl;
-
-    @Column(name = "savings")
-    private Long savings;
 
     @Column(name = "role")
     private Set<String> role = new HashSet<>();
@@ -68,6 +66,8 @@ public class MemberEntity {
     }
 
     public Collection<GrantedAuthority> getSimpleGrantedAuthorities() {
+        role = new HashSet<>();
+        role.add("ROLE_USER");
         return role.stream()
                 .map(SimpleGrantedAuthority::new)
                 .collect(Collectors.toSet());
@@ -79,9 +79,33 @@ public class MemberEntity {
         result.put("nickname", nickname);
         result.put("email", email);
         result.put("profile_url", profileUrl);
-        result.put("savings", savings);
         result.put("role", role);
         return result;
+    }
+
+    public void updateProfileUrlIfAbsent(String profileUrl) {
+        if (this.profileUrl == null || this.profileUrl.isBlank()) {
+            changeProfileUrl(profileUrl);
+        }
+    }
+
+    public MemberEntity(Long id, String nickname, String email, String provider, Set<String> role, String profileUrl) {
+        this.id = id;
+        this.nickname = nickname;
+        this.email = email;
+        this.provider = provider;
+        this.role = role;
+        this.profileUrl = profileUrl;
+    }
+
+    public static MemberEntity toMemberEntityBy(OAuth2User oAuth2User) {
+        Long id = oAuth2User.getAttribute("id");
+        String nickname = oAuth2User.getAttribute("nickname");
+        String email = oAuth2User.getAttribute("email");
+        String provider = oAuth2User.getAttribute("provider");
+        String profileUrl = oAuth2User.getAttribute("profileUrl");
+        Set<String> roles = oAuth2User.getAttribute("roles");
+        return new MemberEntity(id, nickname, email, provider, roles, profileUrl);
     }
 }
 

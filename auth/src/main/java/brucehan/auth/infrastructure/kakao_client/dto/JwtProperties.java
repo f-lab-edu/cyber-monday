@@ -2,6 +2,7 @@ package brucehan.auth.infrastructure.kakao_client.dto;
 
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import javax.crypto.SecretKey;
@@ -19,20 +20,10 @@ public class JwtProperties {
 
     public JwtProperties(String secret,
                          long accessTokenExpiration,
-                         long refreshTokenExpiration,
-                         Key key) {
+                         long refreshTokenExpiration) {
         this.secret = secret;
         this.accessTokenExpiration = accessTokenExpiration;
         this.refreshTokenExpiration = refreshTokenExpiration;
         this.key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
-    }
-
-
-    public long getAccessTokenValidityInSeconds() {
-        return 0;
-    }
-
-    public long getRefreshTokenValidityInSeconds() {
-        return 0;
     }
 }

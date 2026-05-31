@@ -74,7 +74,7 @@ public class OIDCTokenVerification {
         Claims claims = Jwts.parser()
                 .verifyWith(publicKey) // "파싱할 모든 서명된 JWT의 서명을 단 하나의 공개키로 검증하겠다"
                 .requireIssuer("https://kauth.kakao.com")
-                .requireAudience("1347933") // 새걸로 갈아끼울 예정
+                .requireAudience("35c95f246e0eb4e1e284f5e7fb74263e") // 새걸로 갈아끼울 예정
                 .requireExpiration(new Date())
                 .build()
                 .parseSignedClaims(token) // "이 문자열은 서명된(JWS), Claims 페이로드를 가진 JWT일 것이다"
