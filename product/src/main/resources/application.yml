@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: product
+  cloud:
+    vault:
+      uri: ${VAULT_ADDR:http://127.0.0.1:8200}
+      authentication: TOKEN
+      token: ${VAULT_TOKEN}
+      scheme: http
+      kv:
+        enabled: true
+        backend: secret
+  config:
+    import:
+      - optional:classpath:env/.env[.properties]
+      - vault://
+
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/cybermonday?characterEncoding=utf8&serverTimezone=Asia/Seoul
+
+
+
+  jpa:
+    properties:
+      hibernate:
+        show_sql: true
+        format_sql: true
+    hibernate:
+      ddl-auto: create
+    database-platform: org.hibernate.dialect.MySQLDialect
+    open-in-view: false

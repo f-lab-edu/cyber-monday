@@ -3,20 +3,13 @@ package brucehan.product.domain.entity;
 import jakarta.persistence.*;
 
 @Entity
-@Table(
-        name = "products",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "PRODUCT_ID_UNIQUE",
-                        columnNames = {"product_id"}
-                )
-        })
+@Table(name = "products")
 public class Product {
 
     @Id
     @Column(name = "id")
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long productId;
+    private Long id;
 
     @Column(name = "product_name", nullable = false, length = 50)
     private String productName;
@@ -27,8 +20,8 @@ public class Product {
     @Column(name = "price")
     private int price;
 
-    @Column(name = "status", nullable = false, length = 20)
-    private String status;
+    @Column(name = "status", nullable = false)
+    private Status status;
 
     @Column(name = "description", nullable = false)
     private String description;
