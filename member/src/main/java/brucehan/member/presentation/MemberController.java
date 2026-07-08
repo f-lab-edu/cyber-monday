@@ -11,22 +11,22 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 @Slf4j
-@Controller
+@RestController
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
 
-    @ResponseBody
     @PreAuthorize("hasRole('USER')")
-    @GetMapping("/username")
-    public ResponseEntity<MemberResponse> getUsername(@AuthenticationPrincipal MemberEntity member) {
+    @GetMapping("/v1/username")
+    public MemberResponse getUsername(@AuthenticationPrincipal MemberEntity member) {
         log.info("memberEntity : {} : {} : {}", member.getEmail(), member.getProvider(), member.getRole());
         log.info("memberEntity : {} : {}", member.getSubject(), member.getNickname());
         MemberResponse info = memberService.getMyInfo(member);
         log.info("info : {}", info);
-        return ResponseEntity.ok(info);
+        return info;
     }
 }

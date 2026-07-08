@@ -1,4 +1,14 @@
 package brucehan.product.presentation.response;
 
-public class ProductResponse {
+import lombok.Builder;
+
+public record ProductResponse(
+        Long id,
+        String name,
+        String description,
+        String brandName,
+        String seller,
+        Integer price
+) {
+
 }

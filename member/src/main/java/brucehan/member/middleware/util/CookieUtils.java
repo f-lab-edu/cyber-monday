@@ -12,23 +12,11 @@ public class CookieUtils {
     }
 
 
-    public static String getAccessToken(HttpServletRequest request) {
+    public static String getTokenFromCookie(HttpServletRequest request, String cookieName) {
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
             for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("accessToken")) {
-                    return cookie.getValue();
-                }
-            }
-        }
-        return null;
-    }
-
-    public static String getRefreshToken(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-        if (cookies != null) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals("refreshToken")) {
+                if (cookie.getName().equals(cookieName)) {
                     return cookie.getValue();
                 }
             }

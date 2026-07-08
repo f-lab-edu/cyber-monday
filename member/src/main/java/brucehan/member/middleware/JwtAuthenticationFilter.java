@@ -41,8 +41,8 @@ public class JwtAuthenticationFilter extends GenericFilterBean {
      */
     @Override
     public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain) throws IOException, ServletException {
-        String accessToken = CookieUtils.getAccessToken((HttpServletRequest) request);
-        String refreshToken = CookieUtils.getRefreshToken((HttpServletRequest) request);
+        String accessToken = CookieUtils.getTokenFromCookie((HttpServletRequest) request, "access_token");
+        String refreshToken = CookieUtils.getTokenFromCookie((HttpServletRequest) request, "refresh_token");
 
         Token token = null;
         log.info("requestUrl : {}", ((HttpServletRequest) request).getRequestURL());
