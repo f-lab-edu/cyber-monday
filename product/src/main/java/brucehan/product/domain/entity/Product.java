@@ -1,7 +1,11 @@
 package brucehan.product.domain.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
@@ -9,6 +13,7 @@ import org.springframework.data.annotation.LastModifiedDate;
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.FetchType.*;
+import static jakarta.persistence.GenerationType.*;
 
 /**
  * 주 테이블 (외래 키 보유 - 연관관계의 주인)
@@ -16,11 +21,11 @@ import static jakarta.persistence.FetchType.*;
 @Entity
 @Table(name = "products")
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Product {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id")
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @Column(nullable = false)
@@ -50,9 +55,19 @@ public class Product {
     private Stock stock;
 
     @CreatedDate
-    private LocalDateTime createAt;
+    private LocalDateTime createdAt;
 
     @LastModifiedDate
-    private LocalDateTime updateAt;
+    private LocalDateTime updatedAt;
+
+    public Product(String name, String description, String brandName, String seller, Integer price) {
+        this.name = name;
+        this.description = description;
+        this.brandName = brandName;
+        this.seller = seller;
+        this.price = price;
+        this.createdAt = LocalDateTime.now();
+        this.updatedAt = LocalDateTime.now();
+    }
 }
 

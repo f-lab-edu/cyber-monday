@@ -1,10 +1,9 @@
 package brucehan.product.domain.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 import lombok.Getter;
+
+import static jakarta.persistence.GenerationType.*;
 
 /**
  * 대상 테이블(가짜/거울 - 양방향이 필요할 때만 추가)
@@ -12,7 +11,7 @@ import lombok.Getter;
 @Entity
 @Getter
 public class Stock {
-    @Id @GeneratedValue
+    @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     private int quantity;

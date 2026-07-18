@@ -11,7 +11,6 @@ public class TokenFactory {
     public ResponseCookie createAccessTokenCookie(Token token) {
         return token.createAccessTokenCookie()
                 .domain("localhost") // provider.domain()
-                .sameSite("lax")
                 .path("/")
                 .secure(true)
                 .httpOnly(true)
@@ -21,7 +20,6 @@ public class TokenFactory {
     public ResponseCookie createRefreshTokenCookie(Token token) {
         return token.createRefreshTokenCookie()
                 .domain("localhost") // provider.domain
-                .sameSite("lax")
                 .path("/")
                 .secure(true)
                 .httpOnly(true)
