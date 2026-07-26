@@ -11,7 +11,6 @@ public record ProductResponseDto(
         String brandName,
         String seller,
         Integer price,
-        Long stockId,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {
