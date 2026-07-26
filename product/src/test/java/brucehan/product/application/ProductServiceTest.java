@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
@@ -38,8 +39,19 @@ class ProductServiceTest {
     @Test
     void testGetPagedProducts() {
         // given
-        ProductOffsetRequestDto request = new ProductOffsetRequestDto(0, 5, 10);
+        ProductOffsetRequestDto request = new ProductOffsetRequestDto(0, 5);
         ProductOffsetResponseDto<ProductPagedDto> pagedProducts = productService.getPagedProducts(request);
-        log.info("{} {} {}", pagedProducts.content().get(0).name(), pagedProducts.page(), pagedProducts.size());
+        log.info("{} {} {}", pagedProducts.content().get(0).name(), pagedProducts.currentPage(), pagedProducts.size());
+        assertThat(pagedProducts.content().size()).isEqualTo(4);
+    }
+
+    @Test
+    void testGetEmptyPaged() {
+        em.createQuery("delete from Product").executeUpdate();
+        em.flush();
+        ProductOffsetRequestDto request = new ProductOffsetRequestDto(0, 5);
+        ProductOffsetResponseDto<ProductPagedDto> pagedProducts = productService.getPagedProducts(request);
+        log.info("{} {}", pagedProducts.currentPage(), pagedProducts.size());
+        assertThat(pagedProducts.content().size()).isEqualTo(0);
     }
 }
