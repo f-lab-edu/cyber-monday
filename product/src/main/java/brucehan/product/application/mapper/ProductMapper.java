@@ -12,7 +12,5 @@ import org.mapstruct.ReportingPolicy;
         unmappedTargetPolicy = ReportingPolicy.ERROR
 )
 public interface ProductMapper {
-
-    @Mapping(source = "stock.id", target = "stockId")
     ProductResponseDto toResponseDto(Product product);
 }

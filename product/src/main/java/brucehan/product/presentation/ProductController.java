@@ -23,13 +23,12 @@ public class ProductController {
         return productService.findProductDtoById(id);
     }
 
-    @GetMapping("/v1/products/")
+    @GetMapping("/v1/products")
     public ProductOffsetResponseDto<ProductPagedDto> getPagedProducts(
-            @RequestParam(required = false) final int offset,
-            @RequestParam(required = false) final int limit,
+            @RequestParam(required = false, defaultValue = "0") final int pageNumber,
             @RequestParam(defaultValue = "10") final int size
     ) {
-        ProductOffsetRequestDto request = new ProductOffsetRequestDto(offset, limit, size);
+        ProductOffsetRequestDto request = new ProductOffsetRequestDto(pageNumber, size);
         return productService.getPagedProducts(request);
     }
 }

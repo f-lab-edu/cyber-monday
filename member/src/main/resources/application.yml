@@ -29,8 +29,8 @@ spring:
         registration:
           kakao:
             client-name: kakao
-            client-id:
-            client-secret:
+            client-id: ${kakao-client-id}
+            client-secret: ${kakao-client-secret}
             redirect-uri: http://localhost:8080/login/oauth2/code/kakao
             authorization-grant-type: authorization_code
             scope:
@@ -52,6 +52,13 @@ spring:
       host: localhost
       port: 6379
 
+  config:
+    import: 'aws-parameterstore:/parameterstore-config/member/'
+  cloud:
+    aws:
+      region:
+        static: ap-northeast-2
+
 logging:
   level:
     org.springframework.security: TRACE
@@ -64,3 +71,9 @@ jwt:
 
 oauth2:
   login-success-uri: http://localhost:8080/login
+
+aws:
+  paramstore:
+    enabled: true
+    name: member
+    failFast: true
