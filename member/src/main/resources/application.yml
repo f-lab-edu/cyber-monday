@@ -31,7 +31,7 @@ spring:
             client-name: kakao
             client-id: ${kakao-client-id}
             client-secret: ${kakao-client-secret}
-            redirect-uri: http://localhost:8080/login/oauth2/code/kakao
+            redirect-uri: ${kakao-redirect-uri}
             authorization-grant-type: authorization_code
             scope:
               - openid
@@ -70,7 +70,7 @@ jwt:
   refreshTokenExpiration: 604800
 
 oauth2:
-  login-success-uri: http://localhost:8080/login
+  login-success-uri: ${kakao-login-success-uri}
 
 aws:
   paramstore:
