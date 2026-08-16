@@ -25,7 +25,7 @@ public class ProductController {
 
     @GetMapping("/v1/products")
     public ProductOffsetResponseDto<ProductPagedDto> getPagedProducts(
-            @RequestParam(required = false, defaultValue = "0") final int pageNumber,
+            @RequestParam(defaultValue = "0") final int pageNumber,
             @RequestParam(defaultValue = "10") final int size
     ) {
         ProductOffsetRequestDto request = new ProductOffsetRequestDto(pageNumber, size);

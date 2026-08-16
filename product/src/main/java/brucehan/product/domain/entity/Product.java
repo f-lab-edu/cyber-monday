@@ -10,12 +10,8 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 
-import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
-/**
- * 주 테이블 (외래 키 보유 - 연관관계의 주인)
- */
 @Entity
 @Table(name = "products")
 @Getter

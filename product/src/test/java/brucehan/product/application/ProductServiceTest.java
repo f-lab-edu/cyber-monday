@@ -2,7 +2,6 @@ package brucehan.product.application;
 
 import brucehan.product.application.dto.ProductPagedDto;
 import brucehan.product.domain.entity.Product;
-import brucehan.product.domain.repository.ProductQueryRepository;
 import brucehan.product.presentation.request.ProductOffsetRequestDto;
 import brucehan.product.presentation.response.ProductOffsetResponseDto;
 import jakarta.persistence.EntityManager;
@@ -14,7 +13,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 @Slf4j
 @SpringBootTest
@@ -23,8 +21,6 @@ class ProductServiceTest {
 
     @Autowired
     ProductService productService;
-    @Autowired
-    ProductQueryRepository productQueryRepository;
     @Autowired
     EntityManager em;
 
