@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.Query;
 import java.util.Optional;
 
 public interface StockJpaRepository extends JpaRepository<Stock, Long> {
+
+//    @Lock(PESSIMISTIC_WRITE) // 비관락을 쓰면 안 쓴 것에 비해 30% 느려짐. 동시성 제어 효과는 같음.
     @Query("SELECT s FROM Stock s WHERE s.productId = :productId")
     Optional<Stock> findByProductId(Long productId);
 
