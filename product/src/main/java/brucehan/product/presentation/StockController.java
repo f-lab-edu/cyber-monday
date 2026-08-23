@@ -3,8 +3,13 @@ package brucehan.product.presentation;
 import brucehan.product.application.StockService;
 import brucehan.product.presentation.request.StockRequestDto;
 import brucehan.product.presentation.response.StockResponseDto;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -14,21 +19,23 @@ public class StockController {
     private final StockService stockService;
 
     @GetMapping("/{productId}")
-    public StockResponseDto getStock(@PathVariable Long productId) {
-        return stockService.getStock(productId);
+    public ResponseEntity<StockResponseDto> getStock(@PathVariable final Long productId) {
+        return ResponseEntity.ok(stockService.getStock(productId));
     }
 
     @PatchMapping("/decrease")
-    public void decreaseStock(
-            @RequestBody final StockRequestDto stockRequestDto
+    public ResponseEntity<Integer> decreaseStock(
+            @Valid @RequestBody final StockRequestDto stockRequestDto
     ) {
-        stockService.decreaseStock(stockRequestDto);
+    int decreased = stockService.decreaseStock(stockRequestDto);
+        return ResponseEntity.ok(decreased);
     }
 
     @PatchMapping("/increase")
-    public void increaseStock(
-            @RequestBody final StockRequestDto stockRequestDto
+    public ResponseEntity<Integer> increaseStock(
+            @Valid @RequestBody final StockRequestDto stockRequestDto
     ) {
-        stockService.increaseStock(stockRequestDto);
+        int increased = stockService.increaseStock(stockRequestDto);
+        return ResponseEntity.ok(increased);
     }
 }
