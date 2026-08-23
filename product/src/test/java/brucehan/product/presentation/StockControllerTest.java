@@ -59,5 +59,14 @@ class StockControllerTest {
                 .andExpect(status().isNotFound());
     }
 
+    @Test
+    void testMinusQuantity() throws Exception {
+        StockRequestDto requestDto = new StockRequestDto(1L, -1, 1L);
+        mockMvc.perform(patch("/v1/stocks/decrease")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsString(requestDto)))
+                .andExpect(status().isBadRequest());
+    }
+
 
 }
