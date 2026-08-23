@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 public class GlobalExceptionHandler {
     @ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleException(HttpServletRequest request, Exception e) {
-        ErrorCode errorCode = ErrorCode.INTERNAL_SERVER_ERROR;
+        ErrorCode errorCode = ErrorCode.SERVER_ERROR;
         log.error("서버 에러 : {}", request.getRequestURI(), e);
         return ResponseEntity.status(errorCode.getStatus()).body(new ErrorResponse(errorCode.getCode()));
     }
