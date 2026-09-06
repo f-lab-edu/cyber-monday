@@ -25,3 +25,12 @@ replay_pid*
 
 시나리오 순서도.pptx
 ~$시나리오 순서도.pptx
+
+.idea
+.gradle
+/product/src/main/resources/env/.env
+/build/tmp/jar/MANIFEST.MF
+/build/reports/problems/problems-report.html
+/build/resolvedMainClassName
+/AWSCLIV2.pkg
+/order/src/main/resources/env/.env

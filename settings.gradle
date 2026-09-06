@@ -1,5 +1,5 @@
 rootProject.name = 'cyber-monday'
 
 include 'member'
-include 'auth'
 include 'product'
+include 'order'

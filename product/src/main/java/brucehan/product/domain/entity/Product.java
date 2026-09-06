@@ -1,41 +1,42 @@
 package brucehan.product.domain.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
+
+import java.time.LocalDateTime;
+
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Table(
-        name = "products",
-        uniqueConstraints = {
-                @UniqueConstraint(
-                        name = "PRODUCT_ID_UNIQUE",
-                        columnNames = {"product_id"}
-                )
-        })
+@Table(name = "products")
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@EntityListeners(AuditingEntityListener.class)
 public class Product {
 
     @Id
-    @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long productId;
+    @GeneratedValue(strategy = IDENTITY)
+    private Long id;
 
-    @Column(name = "product_name", nullable = false, length = 50)
-    private String productName;
+    private Long price;
 
-    @Column(name = "quantity")
-    private int quantity;
+    @CreatedDate
+    private LocalDateTime createdAt;
 
-    @Column(name = "price")
-    private int price;
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
-    @Column(name = "status", nullable = false, length = 20)
-    private String status;
+    public Product(Long price) {
+        this.price = price;
+    }
 
-    @Column(name = "description", nullable = false)
-    private String description;
-
-    @Column(name = "brand_name", nullable = false, length = 50)
-    private String brandName;
-
-    @Column(name = "seller", nullable = false, length = 50)
-    private String seller;
+    public Long calculatePrice(Stock stock) {
+        return price * stock.getQuantity();
+    }
 }
+
