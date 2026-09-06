@@ -1,6 +1,6 @@
 spring:
   application:
-    name: product
+    name: order
   cloud:
     vault:
       uri: ${VAULT_ADDR:http://127.0.0.1:8200}
@@ -32,4 +32,4 @@ spring:
     open-in-view: false
 
 server:
-  port: 8082
+  port: 8080
