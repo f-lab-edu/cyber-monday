@@ -15,12 +15,12 @@ public class Stock {
     @Id @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    private Integer quantity;
+    private Long quantity;
 
     @Column(name = "product_id", unique = true)
     private Long productId;
 
-    public Stock(Integer quantity, Long productId) {
+    public Stock(Long quantity, Long productId) {
         this.quantity = quantity;
         this.productId = productId;
     }

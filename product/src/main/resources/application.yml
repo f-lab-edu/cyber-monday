@@ -30,3 +30,6 @@ spring:
       ddl-auto: update
     database-platform: org.hibernate.dialect.MySQLDialect
     open-in-view: false
+
+server:
+  port: 8082

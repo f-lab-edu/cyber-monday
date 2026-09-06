@@ -1,4 +1,4 @@
-package brucehan.product.domain.repository;
+package brucehan.product.infrastructure;
 
 import brucehan.product.application.dto.ProductPagedDto;
 import brucehan.product.application.dto.QProductPagedDto;
@@ -22,7 +22,7 @@ public class ProductQueryRepository {
     public Page<ProductPagedDto> findByOffset(Pageable pageable) {
 
         List<ProductPagedDto> content = queryFactory
-                .select(new QProductPagedDto(product.id, product.name, product.price))
+                .select(new QProductPagedDto(product.id, product.price))
                 .from(product)
                 .orderBy(product.createdAt.desc())
                 .offset(pageable.getOffset())

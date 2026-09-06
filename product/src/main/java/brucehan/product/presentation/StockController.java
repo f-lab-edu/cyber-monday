@@ -24,18 +24,18 @@ public class StockController {
     }
 
     @PatchMapping("/decrease")
-    public ResponseEntity<Integer> decreaseStock(
+    public ResponseEntity<Long> decreaseStock(
             @Valid @RequestBody final StockRequestDto stockRequestDto
     ) {
-    int decreased = stockService.decreaseStock(stockRequestDto);
+    long decreased = stockService.decreaseStock(stockRequestDto);
         return ResponseEntity.ok(decreased);
     }
 
     @PatchMapping("/increase")
-    public ResponseEntity<Integer> increaseStock(
+    public ResponseEntity<Long> increaseStock(
             @Valid @RequestBody final StockRequestDto stockRequestDto
     ) {
-        int increased = stockService.increaseStock(stockRequestDto);
+        long increased = stockService.increaseStock(stockRequestDto);
         return ResponseEntity.ok(increased);
     }
 }

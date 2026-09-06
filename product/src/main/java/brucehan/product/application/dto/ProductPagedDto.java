@@ -4,13 +4,11 @@ import com.querydsl.core.annotations.QueryProjection;
 
 public record ProductPagedDto(
         Long id,
-        String name,
-        Integer price
+        Long price
 ) {
     @QueryProjection
-    public ProductPagedDto(Long id, String name, Integer price) {
+    public ProductPagedDto(Long id, Long price) {
         this.id = id;
-        this.name = name;
         this.price = price;
     }
 }
