@@ -16,6 +16,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Slf4j
 @SpringBootTest
@@ -35,27 +36,30 @@ class StockServiceTest {
         stockJpaRepository.save(new Stock(100, 1L));
         StockRequestDto requestDto = new StockRequestDto(1L, 1, 1L);
         int threadCount = 1000;
-        ExecutorService executorService = Executors.newFixedThreadPool(32);
-        CountDownLatch latch = new CountDownLatch(threadCount);
-        AtomicInteger purchased = new AtomicInteger(0);
-        AtomicInteger soldOut = new AtomicInteger(0);
+        AtomicInteger purchased;
+        AtomicInteger soldOut;
+        try (ExecutorService executorService = Executors.newFixedThreadPool(32)) {
+            CountDownLatch latch = new CountDownLatch(threadCount);
+            purchased = new AtomicInteger(0);
+            soldOut = new AtomicInteger(0);
 
-        for (int i = 0; i < threadCount; i++) {
-            executorService.submit(() -> {
-                try {
-                    stockService.decreaseStock(requestDto);
-                    purchased.getAndIncrement();
-                } catch (BusinessException e) {
-                    soldOut.getAndIncrement();
-                } finally {
-                    latch.countDown();
-                }
-            });
+            for (int i = 0; i < threadCount; i++) {
+                executorService.submit(() -> {
+                    try {
+                        stockService.decreaseStock(requestDto);
+                        purchased.getAndIncrement();
+                    } catch (BusinessException e) {
+                        soldOut.getAndIncrement();
+                    } finally {
+                        latch.countDown();
+                    }
+                });
+            }
+
+            latch.await();
+
+            executorService.shutdown();
         }
-
-        latch.await();
-
-        executorService.shutdown();
 
         Stock stock = stockJpaRepository.findByProductId(1L).get();
         // 예상 : 100개 - (1000번주문 * 1개씩주문) = 0개, 매진은 900건
@@ -71,27 +75,30 @@ class StockServiceTest {
         stockJpaRepository.save(new Stock(3, 1L));
         StockRequestDto requestDto = new StockRequestDto(1L, 5, 1L);
         int threadCount = 1;
-        ExecutorService executorService = Executors.newFixedThreadPool(32);
-        CountDownLatch latch = new CountDownLatch(threadCount);
-        AtomicInteger purchased = new AtomicInteger(0);
-        AtomicInteger soldOut = new AtomicInteger(0);
+        AtomicInteger purchased;
+        AtomicInteger soldOut;
+        try (ExecutorService executorService = Executors.newFixedThreadPool(32)) {
+            CountDownLatch latch = new CountDownLatch(threadCount);
+            purchased = new AtomicInteger(0);
+            soldOut = new AtomicInteger(0);
 
-        for (int i = 0; i < threadCount; i++) {
-            executorService.submit(() -> {
-                try {
-                    stockService.decreaseStock(requestDto);
-                    purchased.getAndIncrement();
-                } catch (BusinessException e) {
-                    soldOut.getAndIncrement();
-                } finally {
-                    latch.countDown();
-                }
-            });
+            for (int i = 0; i < threadCount; i++) {
+                executorService.submit(() -> {
+                    try {
+                        stockService.decreaseStock(requestDto);
+                        purchased.getAndIncrement();
+                    } catch (BusinessException e) {
+                        soldOut.getAndIncrement();
+                    } finally {
+                        latch.countDown();
+                    }
+                });
+            }
+
+            latch.await();
+
+            executorService.shutdown();
         }
-
-        latch.await();
-
-        executorService.shutdown();
 
         Stock stock = stockJpaRepository.findByProductId(1L).get();
         // 예상 : 3개 - (1번주문 * 5개씩주문) => 3개 남음
@@ -173,5 +180,34 @@ class StockServiceTest {
         assertThat(soldOut.get()).isEqualTo(9);
         log.info("purchase count : {}", purchased.get());
         log.info("soldOut count : {}", soldOut.get());
+    }
+
+    @Test
+    void testPortionPurchaseRemaining_oneThread_success() throws InterruptedException {
+        stockJpaRepository.save(new Stock(100, 1L));
+        StockRequestDto requestDto = new StockRequestDto(1L, 1, 1L);
+        Integer purchased = 0;
+        Integer soldOut = 0;
+
+        stockService.decreaseStock(requestDto);
+        purchased++;
+
+        Stock stock = stockJpaRepository.findByProductId(1L).get();
+        // 예상 : 100개 - (1번주문 * 1개씩주문) = 99개, 1건 결제, 매진은 0건
+        assertThat(stock.getQuantity()).isEqualTo(99);
+        assertThat(purchased).isEqualTo(1);
+        assertThat(soldOut).isEqualTo(0);
+        log.info("purchase count : {}", purchased);
+        log.info("soldOut count : {}", soldOut);
+    }
+
+
+    @Test
+    void testPortionPurchaseRemaining_minus_parameter() throws InterruptedException {
+        stockJpaRepository.save(new Stock(1, 1L));
+        StockRequestDto requestDto = new StockRequestDto(1L, -1, 1L);
+
+        assertThatThrownBy(() -> stockService.decreaseStock(requestDto))
+                .isInstanceOf(BusinessException.class);
     }
 }

@@ -11,10 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Optional;
-
-import static brucehan.product.config.constant.ErrorCode.PRODUCT_NOT_FOUND;
-import static brucehan.product.config.constant.ErrorCode.STOCK_NOT_ENOUGH;
+import static brucehan.product.config.constant.ErrorCode.*;
 
 @Slf4j
 @Service
@@ -25,24 +22,28 @@ public class StockService {
 
     // TODO : 멱등성 처리
     @Transactional
-    public void decreaseStock(StockRequestDto stockRequestDto) {
+    public int decreaseStock(StockRequestDto stockRequestDto) {
+        if (stockRequestDto.quantity() <= 0) throw new BusinessException(INVALID_REQUEST);
         Integer decreasedCount = stockJpaRepository.decrease(stockRequestDto.productId(), stockRequestDto.quantity());
-        if (decreasedCount == 0) {
+        if (decreasedCount <= 0) { // 드라이버가 스펙 밖 음수를 반환할 가능성에 대비
             stockJpaRepository.findByProductId(stockRequestDto.productId()).orElseThrow(() -> new BusinessException(PRODUCT_NOT_FOUND));
             throw new BusinessException(STOCK_NOT_ENOUGH);
         }
+        return decreasedCount;
     }
 
     @Transactional
-    public void increaseStock(StockRequestDto stockRequestDto) {
+    public int increaseStock(StockRequestDto stockRequestDto) {
+        if (stockRequestDto.quantity() <= 0) throw new BusinessException(INVALID_REQUEST);
         Integer increasedCount = stockJpaRepository.increase(stockRequestDto.productId(), stockRequestDto.quantity());
-        if (increasedCount == 0) {
+        if (increasedCount <= 0) {
             stockJpaRepository.findByProductId(stockRequestDto.productId()).orElseThrow(() -> new BusinessException(PRODUCT_NOT_FOUND));
         }
+        return increasedCount;
     }
 
     @Transactional(readOnly = true)
-    public StockResponseDto getStock(Long productId) {
+    public StockResponseDto getStock(final Long productId) {
         Stock stock = stockJpaRepository.findByProductId(productId).orElseThrow(() -> new BusinessException(PRODUCT_NOT_FOUND));
         return stockMapper.toResponseDto(stock);
     }
