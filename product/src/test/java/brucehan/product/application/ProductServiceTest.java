@@ -10,12 +10,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.transaction.annotation.Transactional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
 @Slf4j
 @SpringBootTest
+@ActiveProfiles("test")
 @Transactional
 class ProductServiceTest {
 
@@ -26,10 +28,10 @@ class ProductServiceTest {
 
     @BeforeEach
     void setup() {
-        em.persist(new Product("티셔츠1", "기능성", "무탠다드", "무신사", 23500));
-        em.persist(new Product("티셔츠2", "기능성", "무탠다드", "무신사", 23500));
-        em.persist(new Product("티셔츠3", "기능성", "무탠다드", "무신사", 23500));
-        em.persist(new Product("티셔츠4", "기능성", "무탠다드", "무신사", 23500));
+        em.persist(new Product(100L));
+        em.persist(new Product(200L));
+        em.persist(new Product(300L));
+        em.persist(new Product(400L));
     }
 
     @Test
@@ -37,7 +39,7 @@ class ProductServiceTest {
         // given
         ProductOffsetRequestDto request = new ProductOffsetRequestDto(0, 5);
         ProductOffsetResponseDto<ProductPagedDto> pagedProducts = productService.getPagedProducts(request);
-        log.info("{} {} {}", pagedProducts.content().get(0).name(), pagedProducts.currentPage(), pagedProducts.size());
+        log.info("{} {}", pagedProducts.currentPage(), pagedProducts.size());
         assertThat(pagedProducts.content().size()).isEqualTo(4);
     }
 
