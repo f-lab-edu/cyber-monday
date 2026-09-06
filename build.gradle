@@ -1,7 +1,7 @@
 plugins {
     id 'java'
-    id 'org.springframework.boot' version '3.5.10'
-    id 'io.spring.dependency-management' version '1.1.7'
+    id 'org.springframework.boot' version '3.5.10' apply false
+    id 'io.spring.dependency-management' version '1.1.7' apply false
 }
 
 allprojects {
@@ -35,12 +35,8 @@ subprojects {
         // lombok
         compileOnly('org.projectlombok:lombok')
         annotationProcessor('org.projectlombok:lombok')
-
-        // DB
-        runtimeOnly('com.mysql:mysql-connector-j:8.4.0')
-
-        // persistence
-        implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+        testCompileOnly 'org.projectlombok:lombok'
+        testAnnotationProcessor 'org.projectlombok:lombok'
     }
 }
 

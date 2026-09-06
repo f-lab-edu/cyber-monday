@@ -28,3 +28,9 @@ replay_pid*
 
 .idea
 .gradle
+/product/src/main/resources/env/.env
+/build/tmp/jar/MANIFEST.MF
+/build/reports/problems/problems-report.html
+/build/resolvedMainClassName
+/AWSCLIV2.pkg
+/order/src/main/resources/env/.env
