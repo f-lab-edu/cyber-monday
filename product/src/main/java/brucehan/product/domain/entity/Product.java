@@ -23,19 +23,7 @@ public class Product {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false)
-    private String description;
-
-    @Column(nullable = false)
-    private String brandName;
-
-    @Column(nullable = false)
-    private String seller;
-
-    private Integer price;
+    private Long price;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -43,12 +31,12 @@ public class Product {
     @LastModifiedDate
     private LocalDateTime updatedAt;
 
-    public Product(String name, String description, String brandName, String seller, Integer price) {
-        this.name = name;
-        this.description = description;
-        this.brandName = brandName;
-        this.seller = seller;
+    public Product(Long price) {
         this.price = price;
+    }
+
+    public Long calculatePrice(Stock stock) {
+        return price * stock.getQuantity();
     }
 }
 

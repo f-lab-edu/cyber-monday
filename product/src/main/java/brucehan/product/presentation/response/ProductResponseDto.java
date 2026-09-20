@@ -6,11 +6,7 @@ import java.time.LocalDateTime;
 
 public record ProductResponseDto(
         Long id,
-        String name,
-        String description,
-        String brandName,
-        String seller,
-        Integer price,
+        Long price,
         LocalDateTime createdAt,
         LocalDateTime updatedAt
 ) {

@@ -2,13 +2,14 @@ package brucehan.product.application;
 
 import brucehan.product.config.exception.BusinessException;
 import brucehan.product.domain.entity.Stock;
-import brucehan.product.domain.repository.StockJpaRepository;
+import brucehan.product.infrastructure.StockJpaRepository;
 import brucehan.product.presentation.request.StockRequestDto;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -20,6 +21,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 @Slf4j
 @SpringBootTest
+@ActiveProfiles("test")
 class StockServiceTest {
     @Autowired
     StockService stockService;
@@ -33,8 +35,8 @@ class StockServiceTest {
 
     @Test
     void testConcurrency() throws InterruptedException {
-        stockJpaRepository.save(new Stock(100, 1L));
-        StockRequestDto requestDto = new StockRequestDto(1L, 1, 1L);
+        stockJpaRepository.save(new Stock(100L, 1L));
+        StockRequestDto requestDto = new StockRequestDto(1L, 1L);
         int threadCount = 1000;
         AtomicInteger purchased;
         AtomicInteger soldOut;
@@ -72,8 +74,8 @@ class StockServiceTest {
 
     @Test
     void testFailPurchaseRemaining() throws InterruptedException {
-        stockJpaRepository.save(new Stock(3, 1L));
-        StockRequestDto requestDto = new StockRequestDto(1L, 5, 1L);
+        stockJpaRepository.save(new Stock(3L, 1L));
+        StockRequestDto requestDto = new StockRequestDto(1L, 5L);
         int threadCount = 1;
         AtomicInteger purchased;
         AtomicInteger soldOut;
@@ -111,8 +113,8 @@ class StockServiceTest {
 
     @Test
     void testPortionPurchaseRemaining() throws InterruptedException {
-        stockJpaRepository.save(new Stock(10, 1L));
-        StockRequestDto requestDto = new StockRequestDto(1L, 3, 1L);
+        stockJpaRepository.save(new Stock(10L, 1L));
+        StockRequestDto requestDto = new StockRequestDto(1L, 3L);
         int threadCount = 5;
         ExecutorService executorService = Executors.newFixedThreadPool(32);
         CountDownLatch latch = new CountDownLatch(threadCount);
@@ -148,8 +150,8 @@ class StockServiceTest {
 
     @Test
     void testPortionPurchaseRemaining_boundary() throws InterruptedException {
-        stockJpaRepository.save(new Stock(100, 1L));
-        StockRequestDto requestDto = new StockRequestDto(1L, 100, 1L);
+        stockJpaRepository.save(new Stock(100L, 1L));
+        StockRequestDto requestDto = new StockRequestDto(1L, 100L);
         int threadCount = 10;
         ExecutorService executorService = Executors.newFixedThreadPool(32);
         CountDownLatch latch = new CountDownLatch(threadCount);
@@ -184,8 +186,8 @@ class StockServiceTest {
 
     @Test
     void testPortionPurchaseRemaining_oneThread_success() throws InterruptedException {
-        stockJpaRepository.save(new Stock(100, 1L));
-        StockRequestDto requestDto = new StockRequestDto(1L, 1, 1L);
+        stockJpaRepository.save(new Stock(100L, 1L));
+        StockRequestDto requestDto = new StockRequestDto(1L, 1L);
         Integer purchased = 0;
         Integer soldOut = 0;
 
@@ -204,8 +206,8 @@ class StockServiceTest {
 
     @Test
     void testPortionPurchaseRemaining_minus_parameter() throws InterruptedException {
-        stockJpaRepository.save(new Stock(1, 1L));
-        StockRequestDto requestDto = new StockRequestDto(1L, -1, 1L);
+        stockJpaRepository.save(new Stock(1L, 1L));
+        StockRequestDto requestDto = new StockRequestDto(1L, -1L);
 
         assertThatThrownBy(() -> stockService.decreaseStock(requestDto))
                 .isInstanceOf(BusinessException.class);
