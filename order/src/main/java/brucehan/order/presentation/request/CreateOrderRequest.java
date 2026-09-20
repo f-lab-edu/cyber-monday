@@ -1,4 +1,4 @@
-package brucehan.order.persentation.request;
+package brucehan.order.presentation.request;
 
 import brucehan.order.application.dto.CreateOrderCommand;
 
@@ -10,14 +10,16 @@ public record CreateOrderRequest(
     public CreateOrderCommand toCommand() {
         return new CreateOrderCommand(
                 items.stream()
-                        .map(item -> new CreateOrderCommand.OrderItem(item.productId, item.quantity))
+                        .map(item -> new CreateOrderCommand.OrderItem(item.productId, item.quantity, item.productName, item.productPrice))
                         .toList()
         );
     }
 
     public record OrderItem(
             Long productId,
-            Long quantity
+            Long quantity,
+            String productName,
+            Long productPrice
     ) {
 
     }

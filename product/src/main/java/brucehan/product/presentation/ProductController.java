@@ -22,12 +22,12 @@ public class ProductController {
     private final ProductService productService;
     private final RedisLockService redisLockService;
 
-    @GetMapping("/v1/products/{id}")
+    @GetMapping("/products/{id}")
     public ProductResponseDto findProductById(@PathVariable final Long id) {
         return productService.findProductDtoById(id);
     }
 
-    @GetMapping("/v1/products")
+    @GetMapping("/products")
     public ProductOffsetResponseDto<ProductPagedDto> getPagedProducts(
             @RequestParam(defaultValue = "0") final int pageNumber,
             @RequestParam(defaultValue = "10") final int size
@@ -36,7 +36,7 @@ public class ProductController {
         return productService.getPagedProducts(request);
     }
 
-    @PostMapping("/v1/products/buy")
+    @PostMapping("/products/buy")
     public ProductBuyResponseDto buy(@RequestBody ProductBuyRequestDto request) {
         String lockKey = "cybermonday:product:" + request.requestId();
 
@@ -52,7 +52,7 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/v1/products/buy/cancel")
+    @PostMapping("/products/buy/cancel")
     public ProductBuyCancelResponseDto cancel(@RequestBody ProductBuyCancelRequestDto request) {
         String lockKey = "cybermonday:product:" + request.requestId();
 

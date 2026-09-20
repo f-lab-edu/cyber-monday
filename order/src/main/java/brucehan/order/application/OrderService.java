@@ -2,7 +2,7 @@ package brucehan.order.application;
 
 import brucehan.order.application.dto.CreateOrderCommand;
 import brucehan.order.application.dto.CreateOrderResult;
-import brucehan.order.application.dto.OrderDto;
+import brucehan.order.application.dto.OrderItemDto;
 import brucehan.order.domain.Order;
 import brucehan.order.domain.OrderItem;
 import brucehan.order.infrastructure.OrderItemRepository;
@@ -19,6 +19,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final OrderItemRepository orderItemRepository;
 
+    // TODO createOrder 지우고 placeOrder 살리면 되는지 검토
     @Transactional
     public CreateOrderResult createOrder(CreateOrderCommand command) {
         Order order = orderRepository.save(new Order());
@@ -31,33 +32,51 @@ public class OrderService {
         return new CreateOrderResult(order.getId());
     }
 
-    public OrderDto getOrder(Long orderId) {
+    @Transactional(readOnly = true)
+    public OrderItemDto getOrder(String orderNumber) {
+        Long orderId = orderRepository.findByOrderNumber(orderNumber)
+                .map(Order::getId)
+                .orElseThrow(RuntimeException::new);
         List<OrderItem> orderItems = orderItemRepository.findAllByOrderId(orderId);
-        return new OrderDto(
+        return new OrderItemDto(
                 orderItems.stream()
-                        .map(item -> new OrderDto.OrderItem(item.getProductId(), item.getQuantity()))
+                        .map(item -> new OrderItemDto.OrderItem(item.getProductId(), item.getQuantity()))
                         .toList()
         );
     }
 
     @Transactional
-    public void request(Long orderId) {
-        Order order = orderRepository.findById(orderId).orElseThrow();
+    public void request(String orderNumber) {
+        Order order = orderRepository.findByOrderNumber(orderNumber).orElseThrow();
         order.request();
         orderRepository.save(order);
     }
 
     @Transactional
-    public void complete(Long orderId) {
-        Order order = orderRepository.findById(orderId).orElseThrow();
+    public void complete(String orderNumber) {
+        Order order = orderRepository.findByOrderNumber(orderNumber).orElseThrow();
         order.complete();
         orderRepository.save(order);
     }
 
     @Transactional
-    public void fail(Long orderId) {
-        Order order = orderRepository.findById(orderId).orElseThrow();
-        order.fail();
+    public void failOrder(String orderNumber) {
+        Order order = orderRepository.findByOrderNumber(orderNumber).orElseThrow();
+        order.failOrder();
+        orderRepository.save(order);
+    }
+
+    @Transactional
+    public void approve(String orderNumber) {
+        Order order = orderRepository.findByOrderNumber(orderNumber).orElseThrow();
+        order.approve(order.getPaymentKey());
+        orderRepository.save(order);
+    }
+
+    @Transactional
+    public void markUnknown(String orderNumber) {
+        Order order = orderRepository.findByOrderNumber(orderNumber).orElseThrow();
+        order.markUnknown();
         orderRepository.save(order);
     }
 }
