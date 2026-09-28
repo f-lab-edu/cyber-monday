@@ -2,7 +2,7 @@ package brucehan.order.application.dto;
 
 import java.util.List;
 
-public record OrderDto(
+public record OrderItemDto(
         List<OrderItem> orderItems
 ) {
     public record OrderItem(

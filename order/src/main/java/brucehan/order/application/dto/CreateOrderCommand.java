@@ -1,7 +1,5 @@
 package brucehan.order.application.dto;
 
-import brucehan.order.domain.OrderItem;
-
 import java.util.List;
 
 public record CreateOrderCommand(
@@ -9,7 +7,9 @@ public record CreateOrderCommand(
 ) {
     public record OrderItem(
             Long productId,
-            Long quantity
+            Long quantity,
+            String productName,
+            Long productPrice
     ) {
 
     }

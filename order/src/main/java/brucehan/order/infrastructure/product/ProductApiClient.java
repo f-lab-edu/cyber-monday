@@ -35,7 +35,7 @@ public class ProductApiClient {
     public ProductBuyCancelApiResponse cancel(ProductBuyCancelApiRequest request) {
         return restClient
                 .post()
-                .uri("/v1/products/buy/cancel")
+                .uri("/products/buy/cancel")
                 .body(request)
                 .retrieve()
                 .body(ProductBuyCancelApiResponse.class);

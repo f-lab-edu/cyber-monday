@@ -13,13 +13,13 @@ public class CompensationRegistry {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long orderId;
+    private String orderNumber;
 
     @Enumerated(EnumType.STRING)
     private CompensationRegistryStatus status;
 
-    public CompensationRegistry(Long orderId) {
-        this.orderId = orderId;
+    public CompensationRegistry(String orderNumber) {
+        this.orderNumber = orderNumber;
         this.status = CompensationRegistryStatus.PENDING;
     }
 

@@ -1,4 +1,4 @@
-package brucehan.order.persentation.response;
+package brucehan.order.presentation.response;
 
 public record CreateOrderResponse(
         Long orderId
