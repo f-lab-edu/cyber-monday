@@ -7,9 +7,7 @@ public record CreateOrderCommand(
 ) {
     public record OrderItem(
             Long productId,
-            Long quantity,
-            String productName,
-            Long productPrice
+            Long quantity
     ) {
 
     }
