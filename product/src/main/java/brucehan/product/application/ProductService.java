@@ -75,7 +75,7 @@ public class ProductService {
         Long totalPrice = 0L;
 
         for (ProductBuyCommandDto.ProductInfo productInfo : command.productInfos()) {
-            Product product = productJpaRepository.findById(productInfo.productId()).orElseThrow();
+            Product product = productJpaRepository.findById(productInfo.productId()).orElseThrow(() -> new BusinessException(PRODUCT_NOT_FOUND));
             stockService.decreaseStock(new StockRequestDto(productInfo.productId(), productInfo.quantity()));
 
             Long price = product.calculatePrice(new Stock(productInfo.quantity(), productInfo.productId()));

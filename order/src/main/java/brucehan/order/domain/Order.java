@@ -1,19 +1,23 @@
 package brucehan.order.domain;
 
+import brucehan.order.config.exception.BusinessException;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
+import static brucehan.order.config.constant.ErrorCode.INVALID_ORDER_STATE;
 import static brucehan.order.domain.OrderStatus.*;
 
 @Table(name = "orders")
 @Entity
 @Getter
+@EntityListeners(AuditingEntityListener.class)
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +39,14 @@ public class Order {
     private String failReason;
 
     @Enumerated(EnumType.STRING)
+    @Column(columnDefinition = "varchar(30)")
     private OrderStatus status;
+
+    @CreatedDate
+    private LocalDateTime createdAt;
+
+    @LastModifiedDate
+    private LocalDateTime updatedAt;
 
     public Order() {
         orderNumber = generateOrderNumber();
@@ -43,34 +54,30 @@ public class Order {
     }
 
     public void request() {
-        if (status != AWAITING) throw new RuntimeException("잘못된 요청입니다.");
+        if (status != AWAITING) throw new BusinessException(INVALID_ORDER_STATE);
         status = PENDING;
     }
 
-
     public void approve(String paymentKey) {
-        if (status != PENDING) throw new RuntimeException("잘못된 요청입니다.");
+        if (status != PENDING) throw new BusinessException(INVALID_ORDER_STATE);
         this.paymentKey = paymentKey;
         paidAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
         status = APPROVED;
     }
 
     public void complete() {
-        if (status != APPROVED) throw new RuntimeException("잘못된 요청입니다.");
+        if (status != APPROVED) throw new BusinessException(INVALID_ORDER_STATE);
         status = COMPLETE;
     }
 
     public void failOrder() {
-        if (status != APPROVED) throw new RuntimeException("잘못된 요청입니다.");
+        if (status != APPROVED) throw new BusinessException(INVALID_ORDER_STATE);
         status = ORDER_FAILED;
     }
 
-    public void markUnknown() {
-        status = UNKNOWN;
-    }
-
     public void failPayment() {
-        if (status != PENDING) throw new RuntimeException("잘못된 요청입니다.");
+        if (status != AWAITING || status != PENDING) throw new BusinessException(INVALID_ORDER_STATE);
         status = PAYMENT_FAILED;
     }
 

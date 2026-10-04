@@ -2,6 +2,7 @@ package brucehan.order.application;
 
 import brucehan.order.application.dto.OrderItemDto;
 import brucehan.order.application.dto.PlaceOrderCommand;
+import brucehan.order.config.exception.BusinessException;
 import brucehan.order.domain.CompensationRegistry;
 import brucehan.order.infrastructure.CompensationRegistryRepository;
 import brucehan.order.infrastructure.product.ProductApiClient;
@@ -41,8 +42,11 @@ public class OrderCoordinator {
             orderService.complete(command.orderNumber());
         } catch (Exception e) {
             // TODO 결제가 실패했을 때 예외 로직 분리. 현재는 주문 실패만 있음.
-            log.error("롤백 : {}", command.orderNumber(), e);
-            orderService.markUnknown(command.orderNumber());
+            if (e instanceof BusinessException be) {
+                log.warn("롤백 : {} - code : {}", command.orderNumber(), be.getErrorCode());
+            } else {
+                log.error("롤백 : {}", command.orderNumber(), e);
+            }
             rollback(command.orderNumber());
             throw e;
         }
@@ -58,8 +62,12 @@ public class OrderCoordinator {
             }
             orderService.failOrder(orderNumber);
         } catch (Exception e) {
-            compensationRegistryRepository.save(new CompensationRegistry(orderNumber));
-            throw e;
+            log.error("보상 실패 : {}", orderNumber, e);
+            try {
+                compensationRegistryRepository.save(new CompensationRegistry(orderNumber, e.getClass().getSimpleName()));
+            } catch (Exception saveEx) {
+                log.error("보상 기록 실패 : {}", orderNumber, saveEx);
+            }
         }
     }
 }
