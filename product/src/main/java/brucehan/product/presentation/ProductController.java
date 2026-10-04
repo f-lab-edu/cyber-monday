@@ -13,8 +13,10 @@ import brucehan.product.presentation.response.ProductBuyResponseDto;
 import brucehan.product.presentation.response.ProductOffsetResponseDto;
 import brucehan.product.presentation.response.ProductResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class ProductController {
@@ -38,6 +40,7 @@ public class ProductController {
 
     @PostMapping("/products/buy")
     public ProductBuyResponseDto buy(@RequestBody ProductBuyRequestDto request) {
+        log.info("buy 요청 수신 : {}", request.requestId());
         String lockKey = "cybermonday:product:" + request.requestId();
 
         boolean lockAcquired = redisLockService.tryLock(lockKey, request.requestId());
