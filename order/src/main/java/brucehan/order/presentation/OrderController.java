@@ -22,14 +22,14 @@ public class OrderController {
     @PostMapping("/order")
     public CreateOrderResponse createOrder(@RequestBody CreateOrderRequest request) {
         CreateOrderResult result = orderService.createOrder(request.toCommand());
-        return new CreateOrderResponse(result.orderId());
+        return new CreateOrderResponse(result.orderNumber());
     }
 
     @PostMapping("/order/place")
     public void placeOrder(@RequestBody PlaceOrderRequest request) {
         String lockKey = "order:" + request.orderNumber();
 
-        boolean lockAcquired = redisLockService.tryLock(lockKey, request.orderNumber().toString());
+        boolean lockAcquired = redisLockService.tryLock(lockKey, request.orderNumber());
         if (!lockAcquired) {
             throw new RuntimeException("락 획득에 실패했습니다.");
         }

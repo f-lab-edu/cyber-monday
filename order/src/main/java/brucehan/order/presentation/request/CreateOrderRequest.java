@@ -10,16 +10,14 @@ public record CreateOrderRequest(
     public CreateOrderCommand toCommand() {
         return new CreateOrderCommand(
                 items.stream()
-                        .map(item -> new CreateOrderCommand.OrderItem(item.productId, item.quantity, item.productName, item.productPrice))
+                        .map(item -> new CreateOrderCommand.OrderItem(item.productId, item.quantity))
                         .toList()
         );
     }
 
     public record OrderItem(
             Long productId,
-            Long quantity,
-            String productName,
-            Long productPrice
+            Long quantity
     ) {
 
     }

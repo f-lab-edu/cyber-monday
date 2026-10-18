@@ -5,8 +5,6 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.math.BigDecimal;
-
 @Table(name = "order_items")
 @Entity
 @NoArgsConstructor(access = AccessLevel.PUBLIC)
@@ -30,6 +28,14 @@ public class OrderItem {
         this.orderId = orderId;
         this.productId = productId;
         this.quantity = quantity;
+    }
+
+    public OrderItem(Long orderId, Long productId, Long quantity, String productName, Long productPrice) {
+        this.orderId = orderId;
+        this.productId = productId;
+        this.quantity = quantity;
+        this.productName = productName;
+        this.productPrice = productPrice;
     }
 
 }
