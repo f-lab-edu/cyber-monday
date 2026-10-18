@@ -13,7 +13,7 @@ import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/v1/stocks")
+@RequestMapping("/stocks")
 public class StockController {
 
     private final StockService stockService;
@@ -27,7 +27,7 @@ public class StockController {
     public ResponseEntity<Long> decreaseStock(
             @Valid @RequestBody final StockRequestDto stockRequestDto
     ) {
-    long decreased = stockService.decreaseStock(stockRequestDto);
+        long decreased = stockService.decreaseStock(stockRequestDto);
         return ResponseEntity.ok(decreased);
     }
 

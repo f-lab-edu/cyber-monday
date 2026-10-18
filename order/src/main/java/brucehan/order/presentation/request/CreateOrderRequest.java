@@ -1,4 +1,4 @@
-package brucehan.order.persentation.request;
+package brucehan.order.presentation.request;
 
 import brucehan.order.application.dto.CreateOrderCommand;
 

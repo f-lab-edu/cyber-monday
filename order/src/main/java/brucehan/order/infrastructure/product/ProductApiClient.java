@@ -5,39 +5,55 @@ import brucehan.order.infrastructure.product.dto.ProductBuyApiResponse;
 import brucehan.order.infrastructure.product.dto.ProductBuyCancelApiRequest;
 import brucehan.order.infrastructure.product.dto.ProductBuyCancelApiResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.retry.annotation.Backoff;
 import org.springframework.retry.annotation.Retryable;
+import org.springframework.web.client.HttpClientErrorException;
+import org.springframework.web.client.HttpServerErrorException;
+import org.springframework.web.client.ResourceAccessException;
 import org.springframework.web.client.RestClient;
 
+@Slf4j
 @RequiredArgsConstructor
 public class ProductApiClient {
     private final RestClient restClient;
+    private final ProductErrorTranslator productErrorTranslator;
 
     @Retryable(
-            retryFor = { Exception.class },
+            retryFor = { HttpServerErrorException.class, ResourceAccessException.class },
             maxAttempts = 3,
             backoff = @Backoff(delay = 500)
     )
     public ProductBuyApiResponse buy(ProductBuyApiRequest request) {
-        return restClient
-                .post()
-                .uri("/products/buy")
-                .body(request)
-                .retrieve()
-                .body(ProductBuyApiResponse.class);
+        try {
+            return restClient
+                    .post()
+                    .uri("/products/buy")
+                    .body(request)
+                    .retrieve()
+                    .body(ProductBuyApiResponse.class);
+        } catch (HttpClientErrorException e) {
+            throw productErrorTranslator.translate(e);
+        }
     }
 
+
+
     @Retryable(
-            retryFor = { Exception.class },
+            retryFor = { HttpServerErrorException.class, ResourceAccessException.class },
             maxAttempts = 3,
             backoff = @Backoff(delay = 500)
     )
     public ProductBuyCancelApiResponse cancel(ProductBuyCancelApiRequest request) {
-        return restClient
-                .post()
-                .uri("/v1/products/buy/cancel")
-                .body(request)
-                .retrieve()
-                .body(ProductBuyCancelApiResponse.class);
+        try {
+            return restClient
+                    .post()
+                    .uri("/products/buy/cancel")
+                    .body(request)
+                    .retrieve()
+                    .body(ProductBuyCancelApiResponse.class);
+        } catch (HttpClientErrorException e) {
+            throw productErrorTranslator.translate(e);
+        }
     }
 }

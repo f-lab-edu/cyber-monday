@@ -1,11 +1,11 @@
-package brucehan.order.persentation.request;
+package brucehan.order.presentation.request;
 
 import brucehan.order.application.dto.PlaceOrderCommand;
 
 public record PlaceOrderRequest(
-        Long orderId
+        String orderNumber
 ) {
     public PlaceOrderCommand toCommand() {
-        return new PlaceOrderCommand(orderId);
+        return new PlaceOrderCommand(orderNumber);
     }
 }

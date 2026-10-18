@@ -13,8 +13,10 @@ import brucehan.product.presentation.response.ProductBuyResponseDto;
 import brucehan.product.presentation.response.ProductOffsetResponseDto;
 import brucehan.product.presentation.response.ProductResponseDto;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 public class ProductController {
@@ -22,12 +24,12 @@ public class ProductController {
     private final ProductService productService;
     private final RedisLockService redisLockService;
 
-    @GetMapping("/v1/products/{id}")
+    @GetMapping("/products/{id}")
     public ProductResponseDto findProductById(@PathVariable final Long id) {
         return productService.findProductDtoById(id);
     }
 
-    @GetMapping("/v1/products")
+    @GetMapping("/products")
     public ProductOffsetResponseDto<ProductPagedDto> getPagedProducts(
             @RequestParam(defaultValue = "0") final int pageNumber,
             @RequestParam(defaultValue = "10") final int size
@@ -36,8 +38,9 @@ public class ProductController {
         return productService.getPagedProducts(request);
     }
 
-    @PostMapping("/v1/products/buy")
+    @PostMapping("/products/buy")
     public ProductBuyResponseDto buy(@RequestBody ProductBuyRequestDto request) {
+        log.info("buy 요청 수신 : {}", request.requestId());
         String lockKey = "cybermonday:product:" + request.requestId();
 
         boolean lockAcquired = redisLockService.tryLock(lockKey, request.requestId());
@@ -52,7 +55,7 @@ public class ProductController {
         }
     }
 
-    @PostMapping("/v1/products/buy/cancel")
+    @PostMapping("/products/buy/cancel")
     public ProductBuyCancelResponseDto cancel(@RequestBody ProductBuyCancelRequestDto request) {
         String lockKey = "cybermonday:product:" + request.requestId();
 

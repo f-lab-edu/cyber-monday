@@ -21,7 +21,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PreAuthorize("hasRole('USER')")
-    @GetMapping("/v1/username")
+    @GetMapping("/username")
     public MemberResponse getUsername(@AuthenticationPrincipal MemberEntity member) {
         log.info("memberEntity : {} : {} : {}", member.getEmail(), member.getProvider(), member.getRole());
         log.info("memberEntity : {} : {}", member.getSubject(), member.getNickname());
